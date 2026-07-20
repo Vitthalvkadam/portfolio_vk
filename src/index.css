@@ -1,0 +1,131 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #070b14;
+  --color-surface: #0d1526;
+  --color-surface-2: #121b30;
+  --color-accent: #38bdf8;
+  --color-accent-2: #22d3ee;
+  --color-text: #e7edf7;
+  --color-muted: #8593ad;
+  --color-border: #1c2740;
+
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+/* Light theme overrides — toggled via the `light` class on <html>.
+   Because Tailwind's generated utilities (bg-bg, text-text, etc.) all
+   resolve to var(--color-*), simply re-defining these custom properties
+   here re-themes every component with zero extra classes. */
+html.light {
+  --color-bg: #f6f8fc;
+  --color-surface: #ffffff;
+  --color-surface-2: #eef2f9;
+  --color-accent: #0284c7;
+  --color-accent-2: #0891b2;
+  --color-text: #0f172a;
+  --color-muted: #5b6478;
+  --color-border: #dde4f0;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+    transition: background-color 0.4s ease, color 0.4s ease;
+  }
+
+  ::selection {
+    background: var(--color-accent);
+    color: var(--color-bg);
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--color-bg);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-surface-2);
+    border-radius: 999px;
+    border: 2px solid var(--color-bg);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-accent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  .container-px {
+    @apply px-6 sm:px-10 lg:px-20;
+  }
+
+  .section-heading {
+    font-family: var(--font-display);
+    @apply text-3xl sm:text-4xl font-semibold tracking-tight text-text;
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    @apply text-xs uppercase tracking-[0.3em] text-accent;
+  }
+
+  .glass {
+    background: color-mix(in oklab, var(--color-surface) 70%, transparent);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--color-border);
+  }
+
+  .gradient-text {
+    background: linear-gradient(90deg, var(--color-accent), var(--color-accent-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .btn-primary {
+    font-family: var(--font-mono);
+    @apply relative inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium text-bg transition-transform duration-300 hover:scale-[1.03] active:scale-[0.98];
+    background: linear-gradient(90deg, var(--color-accent), var(--color-accent-2));
+    box-shadow: 0 0 30px -8px var(--color-accent);
+  }
+
+  .btn-ghost {
+    font-family: var(--font-mono);
+    @apply inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium text-text transition-all duration-300 hover:border-accent hover:text-accent;
+  }
+}
