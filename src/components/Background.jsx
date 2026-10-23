@@ -1,92 +1,116 @@
-import { useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { useEffect } from "react";
+import {
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+} from "framer-motion";
+import {
+  Balloon,
+  Camera,
+  CoffeeCup,
+  Cog,
+  Globe,
+  MapPin,
+  PaperPlane,
+  PocketWatch,
+  SepiaDefs,
+} from "./vintage/Objects";
 
 /**
  * Background
- * Fixed ambient layer shared by the whole page:
- *  - faint circuit-style grid (nods to backend/systems work)
- *  - two slow-drifting gradient blobs
- *  - a soft glow that follows the cursor (desktop only)
- *  - a sparse field of floating particles
- * Purely decorative — sits behind all content via -z-10.
+ * A fixed, cream-and-sepia "old photograph" layer shared by every page:
+ * paper glow + film grain + vignette, with a handful of vintage 3D objects
+ * that float on their own and drift with scroll and pointer movement.
+ *
+ * Performance notes: everything animates via transform/opacity only, the
+ * objects sit on the edges (away from text), and only 4 of the 8 render on
+ * small screens. Reduced-motion users get a static scene.
+ *
+ * Each object has: a position, a size, a scroll "drift" (vh moved over the
+ * whole page, so it always stays on screen), a pointer depth, and its own
+ * float period/phase so nothing moves in unison.
  */
-const PARTICLE_COUNT = 22;
+const OBJECTS = [
+  { id: "globe", Art: Globe, at: { left: "3%", top: "16%" }, size: "clamp(64px, 9vw, 138px)", drift: [10, -16], spin: [-8, 10], pointer: 14, float: { dur: 11, delay: -3, ax: 8, ay: 14, rot: 3 }, opacity: 0.55 },
+  { id: "balloon", Art: Balloon, at: { right: "5%", top: "10%" }, size: "clamp(58px, 8vw, 124px)", drift: [4, -30], spin: [6, -8], pointer: 22, float: { dur: 14, delay: -6, ax: 12, ay: 22, rot: 2 }, opacity: 0.5 },
+  { id: "cup", Art: CoffeeCup, at: { right: "3%", top: "58%" }, size: "clamp(54px, 7vw, 108px)", drift: [-12, 14], spin: [-6, 8], pointer: 10, float: { dur: 9, delay: -1, ax: 5, ay: 10, rot: 2 }, opacity: 0.5 },
+  { id: "pin", Art: MapPin, at: { left: "7%", top: "74%" }, size: "clamp(40px, 5vw, 78px)", drift: [-8, -22], spin: [0, 0], pointer: 18, float: { dur: 7, delay: -2, ax: 3, ay: 16, rot: 4 }, opacity: 0.55 },
+  { id: "plane", Art: PaperPlane, at: { right: "14%", top: "36%" }, size: "clamp(46px, 6vw, 96px)", drift: [18, -34], spin: [-6, 12], pointer: 26, float: { dur: 13, delay: -8, ax: 20, ay: 10, rot: 6 }, opacity: 0.45, wide: true },
+  // the objects below are hidden on narrow screens (they would sit on the text)
+  { id: "camera", Art: Camera, at: { left: "12%", top: "44%" }, size: "clamp(60px, 7vw, 112px)", drift: [6, 18], spin: [-10, 6], pointer: 12, float: { dur: 12, delay: -5, ax: 6, ay: 12, rot: 3 }, opacity: 0.42, wide: true },
+  { id: "watch", Art: PocketWatch, at: { right: "11%", top: "78%" }, size: "clamp(52px, 6vw, 96px)", drift: [-4, -18], spin: [10, -6], pointer: 16, float: { dur: 10, delay: -4, ax: 5, ay: 11, rot: 4 }, opacity: 0.42, wide: true },
+  { id: "cog", Art: Cog, at: { left: "1%", top: "92%" }, size: "clamp(70px, 9vw, 140px)", drift: [-14, -6], spin: [0, 0], pointer: 8, float: { dur: 15, delay: -9, ax: 4, ay: 6, rot: 1 }, opacity: 0.35, wide: true },
+];
 
-const particles = Array.from({ length: PARTICLE_COUNT }, (_, i) => ({
-  id: i,
-  left: Math.random() * 100,
-  size: Math.random() * 2 + 1,
-  duration: Math.random() * 12 + 12,
-  delay: Math.random() * 10,
-}));
+function Floater({ item, scrollYProgress, px, py, still }) {
+  const { Art, at, size, drift, spin, pointer, float, opacity, wide } = item;
 
-export default function Background() {
-  const glowRef = useRef(null);
+  const y = useTransform(scrollYProgress, [0, 1], [`${drift[0]}vh`, `${drift[1]}vh`]);
+  const rotate = useTransform(scrollYProgress, [0, 1], [spin[0], spin[1]]);
+  const mx = useTransform(px, (v) => v * pointer);
+  const my = useTransform(py, (v) => v * pointer);
 
-  useEffect(() => {
-    const handleMove = (e) => {
-      if (!glowRef.current) return;
-      glowRef.current.style.transform = `translate(${e.clientX - 250}px, ${e.clientY - 250}px)`;
-    };
-    window.addEventListener("pointermove", handleMove);
-    return () => window.removeEventListener("pointermove", handleMove);
-  }, []);
+  const floatVars = {
+    "--dur": `${float.dur}s`,
+    "--delay": `${float.delay}s`,
+    "--ax": `${float.ax}px`,
+    "--ay": `${float.ay}px`,
+    "--rot": `${float.rot}deg`,
+  };
 
   return (
-    <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-bg">
-      {/* circuit grid */}
-      <div
-        className="absolute inset-0 opacity-[0.07]"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, var(--color-accent) 1px, transparent 1px), linear-gradient(to bottom, var(--color-accent) 1px, transparent 1px)",
-          backgroundSize: "56px 56px",
-          maskImage: "radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%)",
-        }}
-      />
+    <motion.div
+      style={{ ...at, width: size, height: size, opacity, ...(still ? {} : { y, rotate }) }}
+      className={`absolute ${wide ? "hidden md:block" : ""}`}
+    >
+      <motion.div style={still ? undefined : { x: mx, y: my }} className="h-full w-full">
+        <div className={still ? "h-full w-full" : "vt-float h-full w-full"} style={floatVars}>
+          <Art />
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
 
-      {/* gradient blobs */}
-      <motion.div
-        className="absolute -left-40 top-[-10%] h-[560px] w-[560px] rounded-full blur-[120px]"
-        style={{
-          background:
-            "radial-gradient(circle, color-mix(in oklab, var(--color-accent) 25%, transparent), transparent 70%)",
-        }}
-        animate={{ x: [0, 60, 0], y: [0, 40, 0] }}
-        transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.div
-        className="absolute right-[-15%] top-[30%] h-[520px] w-[520px] rounded-full blur-[130px]"
-        style={{
-          background:
-            "radial-gradient(circle, color-mix(in oklab, var(--color-accent-2) 18%, transparent), transparent 70%)",
-        }}
-        animate={{ x: [0, -50, 0], y: [0, -30, 0] }}
-        transition={{ duration: 26, repeat: Infinity, ease: "easeInOut" }}
-      />
+export default function Background() {
+  const reduce = useReducedMotion();
+  const { scrollYProgress } = useScroll();
 
-      {/* cursor glow (desktop) */}
-      <div
-        ref={glowRef}
-        className="absolute left-0 top-0 hidden h-[500px] w-[500px] rounded-full opacity-[0.06] blur-[100px] transition-transform duration-300 ease-out lg:block"
-        style={{ background: "radial-gradient(circle, var(--color-accent), transparent 70%)" }}
-      />
+  // Pointer parallax (-0.5 … 0.5), smoothed with a spring.
+  const rawX = useMotionValue(0);
+  const rawY = useMotionValue(0);
+  const px = useSpring(rawX, { stiffness: 40, damping: 18, mass: 0.6 });
+  const py = useSpring(rawY, { stiffness: 40, damping: 18, mass: 0.6 });
 
-      {/* floating particles */}
-      {particles.map((p) => (
-        <motion.span
-          key={p.id}
-          className="absolute rounded-full bg-accent/40"
-          style={{ left: `${p.left}%`, width: p.size, height: p.size, bottom: -20 }}
-          animate={{ y: ["0vh", "-110vh"], opacity: [0, 0.7, 0] }}
-          transition={{
-            duration: p.duration,
-            delay: p.delay,
-            repeat: Infinity,
-            ease: "linear",
-          }}
+  useEffect(() => {
+    if (reduce || !window.matchMedia("(hover: hover)").matches) return undefined;
+    const onMove = (e) => {
+      rawX.set(e.clientX / window.innerWidth - 0.5);
+      rawY.set(e.clientY / window.innerHeight - 0.5);
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    return () => window.removeEventListener("pointermove", onMove);
+  }, [reduce, rawX, rawY]);
+
+  return (
+    <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-bg">
+      <SepiaDefs />
+      <div className="vt-glow absolute inset-0" />
+      {OBJECTS.map((item) => (
+        <Floater
+          key={item.id}
+          item={item}
+          scrollYProgress={scrollYProgress}
+          px={px}
+          py={py}
+          still={reduce}
         />
       ))}
+      <div className="vt-grain" />
+      <div className="vt-vignette absolute inset-0" />
     </div>
   );
 }

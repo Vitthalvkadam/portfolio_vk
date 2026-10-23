@@ -6,9 +6,8 @@ function getInitialTheme() {
   if (typeof window === "undefined") return "dark";
   const stored = window.localStorage.getItem("theme");
   if (stored === "light" || stored === "dark") return stored;
-  // Fall back to the visitor's OS preference, default to dark otherwise.
-  const prefersLight = window.matchMedia?.("(prefers-color-scheme: light)").matches;
-  return prefersLight ? "light" : "dark";
+  // First visit: open on the cream / sepia look; the toggle remembers the choice.
+  return "light";
 }
 
 export function ThemeProvider({ children }) {

@@ -138,10 +138,43 @@ export const certificates = [
 ];
 
 export const navLinks = [
-  { label: "Home", href: "#home" },
-  { label: "About", href: "#about" },
-  { label: "Skills", href: "#skills" },
-  { label: "Projects", href: "#projects" },
-  { label: "Certificates", href: "#certificates" },
-  { label: "Contact", href: "#contact" },
+  { label: "About", href: "/#about", type: "section" },
+  { label: "Projects", href: "/projects", type: "page" },
+  { label: "Blog", href: "/blog", type: "page" },
+];
+
+export const blogPosts = [
+  {
+    id: "getting-started-with-spring-boot",
+    title: "Getting Started with Spring Boot",
+    excerpt:
+      "A practical walkthrough of setting up a Spring Boot project from scratch — project structure, dependencies, and your first REST controller.",
+    date: "2025-01-12",
+    readTime: "5 min read",
+    tags: ["Spring Boot", "Java"],
+    content:
+      "This is a placeholder post. Replace this content with your own write-up about setting up a Spring Boot project — cover project structure, key dependencies, application properties, and your first REST controller.",
+  },
+  {
+    id: "dsa-patterns-that-saved-me",
+    title: "5 DSA Patterns That Saved Me",
+    excerpt:
+      "The recurring patterns — sliding window, two pointers, prefix sums, and more — that show up again and again while solving DSA problems.",
+    date: "2025-02-03",
+    readTime: "7 min read",
+    tags: ["DSA", "Interview Prep"],
+    content:
+      "This is a placeholder post. Replace this content with your own notes on recurring DSA patterns such as sliding window, two pointers, prefix sums, fast & slow pointers, and how to recognize which pattern fits a problem.",
+  },
+  {
+    id: "building-a-full-stack-app",
+    title: "Building a Full-Stack App with React & Spring Boot",
+    excerpt:
+      "Lessons learned wiring a React frontend to a Spring Boot + MySQL backend — from REST API design to deployment.",
+    date: "2025-03-18",
+    readTime: "6 min read",
+    tags: ["React", "Spring Boot", "MySQL"],
+    content:
+      "This is a placeholder post. Replace this content with your own case study of a full-stack build — REST API design decisions, authentication, connecting React to Spring Boot, and what you'd do differently next time.",
+  },
 ];

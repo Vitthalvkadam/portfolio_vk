@@ -27,7 +27,7 @@ export default function Certificates() {
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.5, delay: i * 0.1 }}
             whileHover={{ y: -6, scale: 1.015 }}
-            className="glass relative overflow-hidden rounded-2xl p-6 transition-shadow duration-300 hover:shadow-[0_0_40px_-15px_rgba(56,189,248,0.35)]"
+            className="glass relative overflow-hidden rounded-2xl p-6 transition-shadow duration-300 hover:shadow-[0_22px_44px_-22px_var(--shadow-warm)]"
           >
             <div className="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-accent/10 blur-2xl" />
             <HiOutlineAcademicCap className="text-3xl text-accent" />

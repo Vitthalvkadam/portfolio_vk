@@ -1,34 +1,110 @@
-@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Fondamento&family=Lora:wght@400;500;600;700&family=Courier+Prime:wght@400;700&display=swap");
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #070b14;
-  --color-surface: #0d1526;
-  --color-surface-2: #121b30;
-  --color-accent: #38bdf8;
-  --color-accent-2: #22d3ee;
-  --color-text: #e7edf7;
-  --color-muted: #8593ad;
-  --color-border: #1c2740;
+  /* Dark mode: "candlelit sepia" — deep coffee brown with parchment text. */
+  --color-bg: #1c130c;
+  --color-surface: #261910;
+  --color-surface-2: #33231a;
+  --color-accent: #eab76f;
+  --color-accent-2: #d29a58;
+  --color-text: #f6e6c9;
+  --color-muted: #bda688;
+  --color-border: #4b3727;
 
-  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-display: "Fondamento", "Lora", ui-serif, Georgia, serif;
+  --font-body: "Lora", ui-serif, Georgia, "Times New Roman", serif;
+  --font-mono: "Courier Prime", ui-monospace, "Courier New", monospace;
 }
 
 /* Light theme overrides — toggled via the `light` class on <html>.
-   Because Tailwind's generated utilities (bg-bg, text-text, etc.) all
-   resolve to var(--color-*), simply re-defining these custom properties
-   here re-themes every component with zero extra classes. */
+   This is the cream / sepia look from the reference image. Because Tailwind's
+   generated utilities (bg-bg, text-text, etc.) all resolve to var(--color-*),
+   re-defining these custom properties re-themes every component. */
 html.light {
-  --color-bg: #f6f8fc;
-  --color-surface: #ffffff;
-  --color-surface-2: #eef2f9;
-  --color-accent: #0284c7;
-  --color-accent-2: #0891b2;
-  --color-text: #0f172a;
-  --color-muted: #5b6478;
-  --color-border: #dde4f0;
+  --color-bg: #fdeed4;
+  --color-surface: #fff7e6;
+  --color-surface-2: #f4dfb8;
+  --color-accent: #7a3b1d;
+  --color-accent-2: #8f5424;
+  --color-text: #3a2314;
+  --color-muted: #684a35;
+  --color-border: #d8bd8f;
+}
+
+/* ------------------------------------------------------------------ */
+/* Vintage tokens (not Tailwind utilities, so they live outside @theme) */
+/* ------------------------------------------------------------------ */
+:root {
+  --shadow-warm: rgba(0, 0, 0, 0.55);
+  --glow: rgba(214, 150, 80, 0.12);
+  --vignette: rgba(0, 0, 0, 0.55);
+  --grain-opacity: 0.09;
+  --grain-blend: screen;
+
+  /* floating 3D object palette (see components/vintage/Objects.jsx) */
+  --sp-hi: #a98560;
+  --sp-mid: #6f5339;
+  --sp-lo: #3b2a1c;
+  --sp-line: #d7b283;
+
+  /* skyline palette (see components/vintage/Skyline.jsx) */
+  --sk-a: #5a4230;
+  --sk-b: #46331f;
+  --sk-c: #3a2a1d;
+  --sk-h: #2f2217;
+  --sk-win: #e7b46b;
+  --sk-win-op: 0.55;
+  --sk-eye: #f1d4a2;
+  --sk-peg: #eab76f;
+  --sk-beacon: #ffb35c;
+
+  /* footer sunset */
+  --dusk-1: #3b2314;
+  --dusk-2: #7a4120;
+  --dusk-3: #3d2214;
+  --dusk-4: #1a0f08;
+}
+
+html.light {
+  --shadow-warm: rgba(92, 52, 20, 0.38);
+  --glow: rgba(255, 252, 240, 0.7);
+  --vignette: rgba(110, 66, 28, 0.26);
+  --grain-opacity: 0.2;
+  --grain-blend: multiply;
+
+  --sp-hi: #e6cba0;
+  --sp-mid: #b08c63;
+  --sp-lo: #6e4f33;
+  --sp-line: #4d311c;
+
+  --sk-a: #a58763;
+  --sk-b: #8a6c4b;
+  --sk-c: #c3a67d;
+  --sk-h: #7d6346;
+  --sk-win: #4a3020;
+  --sk-win-op: 0.8;
+  --sk-eye: #fdeed4;
+  --sk-peg: #3a2314;
+  --sk-beacon: #8a3b1c;
+
+  --dusk-1: #f2c590;
+  --dusk-2: #c06a3a;
+  --dusk-3: #6b3820;
+  --dusk-4: #2a170c;
+}
+
+/* The footer is always "golden hour → night", whatever the page theme is. */
+.sk-night {
+  --sk-a: #34200f;
+  --sk-b: #28170a;
+  --sk-c: #4a2c18;
+  --sk-h: #1d1008;
+  --sk-win: #ffc46b;
+  --sk-win-op: 1;
+  --sk-eye: #ffd58a;
+  --sk-peg: #ffc46b;
+  --sk-beacon: #ff9a4a;
 }
 
 @layer base {
@@ -38,6 +114,8 @@ html.light {
 
   html {
     scroll-behavior: smooth;
+    /* Fondamento only ships one weight — never fake a bold. */
+    font-synthesis: none;
   }
 
   body {
@@ -62,7 +140,7 @@ html.light {
   }
 
   ::-webkit-scrollbar-thumb {
-    background: var(--color-surface-2);
+    background: var(--color-border);
     border-radius: 999px;
     border: 2px solid var(--color-bg);
   }
@@ -104,10 +182,11 @@ html.light {
   }
 
   .glass {
-    background: color-mix(in oklab, var(--color-surface) 70%, transparent);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    background: color-mix(in oklab, var(--color-surface) 72%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
     border: 1px solid var(--color-border);
+    box-shadow: 0 14px 34px -26px var(--shadow-warm);
   }
 
   .gradient-text {
@@ -121,11 +200,293 @@ html.light {
     font-family: var(--font-mono);
     @apply relative inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium text-bg transition-transform duration-300 hover:scale-[1.03] active:scale-[0.98];
     background: linear-gradient(90deg, var(--color-accent), var(--color-accent-2));
-    box-shadow: 0 0 30px -8px var(--color-accent);
+    box-shadow: 0 10px 26px -12px var(--shadow-warm);
   }
 
   .btn-ghost {
     font-family: var(--font-mono);
     @apply inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium text-text transition-all duration-300 hover:border-accent hover:text-accent;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Vintage atmosphere: grain, vignette, paper glow                     */
+/* ------------------------------------------------------------------ */
+.vt-glow {
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 14%, var(--glow), transparent 70%),
+    radial-gradient(ellipse 50% 40% at 12% 90%, var(--glow), transparent 70%);
+}
+
+.vt-vignette {
+  background: radial-gradient(ellipse at center, transparent 52%, var(--vignette) 100%);
+}
+
+.vt-grain {
+  position: absolute;
+  inset: -200px; /* one tile of slack so the loop below is seamless */
+  background-image: url("./assets/vintage/grain.svg");
+  background-size: 200px 200px;
+  opacity: var(--grain-opacity);
+  mix-blend-mode: var(--grain-blend);
+  animation: vt-grain 0.9s steps(5) infinite;
+  will-change: transform;
+}
+
+@keyframes vt-grain {
+  to {
+    transform: translate3d(200px, 200px, 0);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Floating objects — every one gets its own period/phase via CSS vars */
+/* so the motion reads as random rather than choreographed.            */
+/* ------------------------------------------------------------------ */
+.vt-float {
+  animation: vt-float var(--dur, 9s) ease-in-out var(--delay, 0s) infinite;
+  will-change: transform;
+}
+
+@keyframes vt-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  33% {
+    transform: translate3d(var(--ax, 6px), calc(var(--ay, 12px) * -1), 0) rotate(var(--rot, 3deg));
+  }
+  66% {
+    transform: translate3d(calc(var(--ax, 6px) * -0.7), calc(var(--ay, 12px) * 0.5), 0)
+      rotate(calc(var(--rot, 3deg) * -1));
+  }
+}
+
+/* small bob for skill tiles etc. */
+.vt-bob {
+  animation: vt-bob var(--dur, 6s) ease-in-out var(--delay, 0s) infinite;
+}
+
+@keyframes vt-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.vt-spin {
+  animation: vt-spin var(--dur, 60s) linear infinite;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+@keyframes vt-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.vt-steam {
+  animation: vt-steam 5s ease-in-out var(--delay, 0s) infinite;
+  transform-box: fill-box;
+}
+
+@keyframes vt-steam {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scaleY(0.85);
+  }
+  35% {
+    opacity: 0.65;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-14px) scaleY(1.1);
+  }
+}
+
+/* 3D-ish fills for the objects (gradients are defined in <SepiaDefs/>) */
+.f-hi { fill: var(--sp-hi); }
+.f-mid { fill: var(--sp-mid); }
+.f-lo { fill: var(--sp-lo); }
+.s-line { stroke: var(--sp-line); }
+.s-mid { stroke: var(--sp-mid); }
+
+/* ------------------------------------------------------------------ */
+/* Skyline details                                                     */
+/* ------------------------------------------------------------------ */
+.sk-win {
+  fill: var(--sk-win);
+  opacity: var(--sk-win-op);
+}
+
+.sk-night .sk-win {
+  animation: sk-flicker var(--d, 7s) linear var(--dl, 0s) infinite;
+}
+
+@keyframes sk-flicker {
+  0%,
+  38%,
+  44%,
+  100% {
+    opacity: 1;
+  }
+  40% {
+    opacity: 0.25;
+  }
+  42% {
+    opacity: 0.8;
+  }
+  71% {
+    opacity: 0.55;
+  }
+  73% {
+    opacity: 1;
+  }
+}
+
+.sk-spin {
+  animation: vt-spin 28s linear infinite;
+}
+
+.sk-steam {
+  animation: vt-steam 6s ease-in-out var(--delay, 0s) infinite;
+}
+
+.sk-beacon {
+  fill: var(--sk-beacon);
+  animation: sk-beacon 2.6s ease-in-out infinite;
+}
+
+@keyframes sk-beacon {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.sk-wave {
+  animation: sk-wave 2.4s ease-in-out infinite;
+}
+
+@keyframes sk-wave {
+  0%,
+  60%,
+  100% {
+    transform: rotate(0deg);
+  }
+  70% {
+    transform: rotate(-28deg);
+  }
+  80% {
+    transform: rotate(8deg);
+  }
+  90% {
+    transform: rotate(-24deg);
+  }
+}
+
+.sk-walk {
+  animation: sk-walk 70s linear infinite;
+}
+
+@keyframes sk-walk {
+  0% {
+    transform: translateX(-640px) scaleX(1);
+  }
+  49.9% {
+    transform: translateX(640px) scaleX(1);
+  }
+  50% {
+    transform: translateX(640px) scaleX(-1);
+  }
+  99.9% {
+    transform: translateX(-640px) scaleX(-1);
+  }
+  100% {
+    transform: translateX(-640px) scaleX(1);
+  }
+}
+
+.sk-step {
+  animation: sk-step 0.55s ease-in-out infinite;
+}
+
+@keyframes sk-step {
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Footer: sunset sky + fireflies                                      */
+/* ------------------------------------------------------------------ */
+.ft-sky {
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--dusk-1) 20%,
+    var(--dusk-2) 38%,
+    var(--dusk-3) 58%,
+    var(--dusk-4) 100%
+  );
+}
+
+.ft-sun {
+  /* closest-side keeps the glow inside its box (no clipped square edge) */
+  background: radial-gradient(
+    circle closest-side at 50% 50%,
+    #fff6dc 0%,
+    #ffd58a 38%,
+    #f6a24d 66%,
+    rgba(246, 162, 77, 0.5) 70%,
+    rgba(246, 162, 77, 0.16) 86%,
+    transparent 100%
+  );
+  will-change: transform;
+}
+
+.ft-firefly {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: #ffd58a;
+  box-shadow: 0 0 10px 3px rgba(255, 196, 107, 0.7);
+  opacity: 0;
+  animation: ft-firefly var(--dur, 12s) ease-in-out var(--delay, 0s) infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes ft-firefly {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0);
+  }
+  15%,
+  80% {
+    opacity: 0.9;
+  }
+  50% {
+    transform: translate3d(var(--dx, 30px), var(--dy, -40px), 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(calc(var(--dx, 30px) * -0.6), calc(var(--dy, -40px) * 1.6), 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vt-grain {
+    animation: none;
+  }
+  .ft-firefly {
+    opacity: 0.6;
   }
 }

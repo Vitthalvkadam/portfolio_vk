@@ -1,7 +1,7 @@
 # Vitthal Kadam — Developer Portfolio
 
-A premium, dark-themed, fully responsive portfolio built with React 19, Vite,
-Tailwind CSS v4, and Framer Motion.
+A fully responsive portfolio built with React 19, Vite, Tailwind CSS v4, and
+Framer Motion, styled as a vintage sepia "wonders of street view" scene.
 
 ## Getting started
 
@@ -55,7 +55,10 @@ src/
  │    ├── Certificates.jsx
  │    ├── Contact.jsx
  │    ├── Footer.jsx
- │    └── Background.jsx
+ │    ├── Background.jsx
+ │    └── vintage/
+ │         ├── Objects.jsx   (floating sepia 3D objects)
+ │         └── Skyline.jsx   (hero + footer skyline)
  ├── data/
  │    └── portfolioData.js
  ├── App.jsx
@@ -65,16 +68,29 @@ src/
 
 ## Design notes
 
-- **Theme**: near-black navy (`#070b14`) base with a sky/cyan accent
-  gradient (`#38bdf8` → `#22d3ee`), matching the requested dark blue/cyan
-  direction.
-- **Type**: Space Grotesk for display headings, Inter for body copy,
-  JetBrains Mono for eyebrows, badges, and the terminal-style hero motif.
-- **Signature element**: the hero's `$ whoami` terminal card — a nod to a
-  backend engineer's world — types through your role list instead of a
-  generic gradient headline.
-- Respects `prefers-reduced-motion`, and all interactive elements have
-  visible keyboard focus states.
+- **Look**: warm cream paper (`#fdeed4`), dark-brown ink (`#3a2314`) and
+  burnt-umber accents, with film grain and a soft vignette. The dark theme is
+  a candlelit sepia (coffee brown + parchment) so the toggle still works.
+  A first visit opens on the cream look; a saved choice always wins.
+- **Type**: Fondamento (calligraphic display), Lora (body), Courier Prime
+  (typewriter labels, nav and buttons).
+- **Vintage objects**: `components/vintage/Objects.jsx` draws a globe, coffee
+  cup, camera, hot-air balloon, pocket watch, paper plane, cog and map pin as
+  gradient-shaded SVG — no image files. `Background.jsx` floats them on their
+  own random-looking loops and adds scroll + pointer parallax.
+- **Hero skyline**: `vintage/Skyline.jsx` (church, windmill, coffee-cup
+  building, double-decker, radio tower, cottage and a Street View pegman). It
+  rises in on load and its two layers drift at different scroll speeds.
+- **Footer**: a sunset scene — the sky deepens and the sun sets as you scroll
+  in, windows flicker on, fireflies drift, the pegman strolls, the name's
+  letters hop on hover, and "Back to top" is a balloon that lifts off.
+- **Tuning**: colours are CSS variables at the top of `src/index.css`
+  (`--sp-*` objects, `--sk-*` skyline, `--dusk-*` footer sky). Floating
+  objects are configured in the `OBJECTS` list in `Background.jsx`.
+- **Motion & a11y**: everything animates with transform/opacity only;
+  `prefers-reduced-motion` is honoured (CSS and Framer Motion), decorative
+  art is `aria-hidden`, text contrast meets WCAG AA in both themes, and focus
+  rings are kept.
 
 ## Next steps
 

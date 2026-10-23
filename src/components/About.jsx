@@ -60,37 +60,8 @@ export default function About() {
         ))}
       </div>
 
-      {/* timeline */}
-      <div className="mx-auto mt-24 max-w-2xl">
-        <motion.h3
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="mb-10 text-center font-mono text-sm uppercase tracking-[0.25em] text-muted"
-        >
-          Learning Path
-        </motion.h3>
-
-        <ol className="relative border-l border-border pl-8">
-          {timeline.map((item, i) => (
-            <motion.li
-              key={item.year}
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.5, delay: i * 0.12 }}
-              className="mb-10 last:mb-0"
-            >
-              <span className="absolute -left-[7px] mt-1.5 h-3 w-3 rounded-full bg-accent shadow-[0_0_12px_2px_rgba(56,189,248,0.6)]" />
-              <span className="font-mono text-xs uppercase tracking-wide text-accent-2">
-                {item.year}
-              </span>
-              <h4 className="mt-1 font-display text-lg font-medium text-text">{item.title}</h4>
-              <p className="mt-1 text-sm leading-relaxed text-muted">{item.description}</p>
-            </motion.li>
-          ))}
-        </ol>
-      </div>
+      
+ 
     </section>
   );
 }

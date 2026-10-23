@@ -1,6 +1,7 @@
 import { useRef } from "react";
+import { Link } from "react-router-dom";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { HiOutlineArrowTopRightOnSquare } from "react-icons/hi2";
+import { HiOutlineArrowTopRightOnSquare, HiOutlineArrowLeft } from "react-icons/hi2";
 import { FaGithub } from "react-icons/fa";
 import { projects } from "../data/portfolioData";
 
@@ -43,9 +44,10 @@ function ProjectCard({ project, index }) {
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-        className="glass group relative flex h-full flex-col overflow-hidden rounded-2xl p-7 transition-shadow duration-300 hover:shadow-[0_0_50px_-15px_rgba(56,189,248,0.4)]"
+        className="glass group relative flex h-full flex-col overflow-hidden rounded-2xl p-7 transition-shadow duration-300 hover:shadow-[0_26px_50px_-24px_var(--shadow-warm)]"
       >
-        {/* preview panel — code-window motif since no live screenshot is provided */}
+        <Link to={`/projects/${project.id}`} className="absolute inset-0 z-10" aria-label={project.title} />
+
         <div className="relative mb-6 flex h-40 items-center justify-center overflow-hidden rounded-xl border border-border bg-surface-2">
           <div className="absolute left-3 top-3 flex gap-1.5">
             <span className="h-2.5 w-2.5 rounded-full bg-red-400/70" />
@@ -71,7 +73,7 @@ function ProjectCard({ project, index }) {
           ))}
         </div>
 
-        <div className="mt-6 flex items-center gap-4">
+        <div className="relative z-20 mt-6 flex items-center gap-4">
           <a
             href={project.liveUrl}
             target="_blank"
@@ -90,15 +92,29 @@ function ProjectCard({ project, index }) {
             <FaGithub />
             Source
           </a>
+          <Link
+            to={`/projects/${project.id}`}
+            className="ml-auto font-mono text-sm text-accent transition-colors hover:text-accent-2"
+          >
+            Details →
+          </Link>
         </div>
       </motion.div>
     </motion.div>
   );
 }
 
-export default function Projects() {
+export default function ProjectsPage() {
   return (
-    <section id="projects" className="container-px mx-auto max-w-7xl py-28">
+    <section className="container-px mx-auto max-w-7xl py-32">
+      <Link
+        to="/"
+        className="mb-10 inline-flex items-center gap-1.5 font-mono text-sm text-muted transition-colors hover:text-accent"
+      >
+        <HiOutlineArrowLeft />
+        Back to home
+      </Link>
+
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
